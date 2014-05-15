@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Framebuffer.bash by coderofsalvation</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Framebuffer.bash</h1>
+        <h2>framebuffer in bash to draw ascii pixels, borders, animate e.g. (bash ui bootstrap)</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/coderofsalvation/framebuffer.bash/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/coderofsalvation/framebuffer.bash/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/coderofsalvation/framebuffer.bash" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h3>
+<a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why</h3>
+
+<p>For minimalists and productivity fanatics.
+The console is sometimes 'good enough' compared to fullfledged client/server html/css/javascript ui's.</p>
+
+<h3>
+<a name="pluginsbarchart" class="anchor" href="#pluginsbarchart"><span class="octicon octicon-link"></span></a>plugins/Barchart</h3>
+
+<p><code>usage: barchart &lt;x&gt; &lt;y&gt; &lt;height&gt; "0,1,2,0,2,1,"</code></p>
+
+<p>The barchart plugin lets you create 3-state barcharts with ease:
+lets compose our bashscript:</p>
+
+<pre><code>repo="https://raw.githubusercontent.com/coderofsalvation/framebuffer.bash/master"
+curl "$repo/framebuffer.bash"       &gt; barchart
+curl "$repo/plugins/barchart.bash" &gt;&gt; barchart
+</code></pre>
+
+<p>lets test a barchart:</p>
+
+<pre><code>source barchart
+export WIDTH=22
+barchart 20 2 20 "0,1,2,2,1,2,1,0,1,2,0"
+barchart 20 4 20 "0,1,2,1,0,1,2,0"
+</code></pre>
+
+<p>this will produce something like this:</p>
+
+<pre><code>┌──────────────────────┐
+│_▄██▄█▄_▄█_________│
+┌──────────────────────┐
+│_▄█▄_▄█_____________│
+</code></pre>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
