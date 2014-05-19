@@ -35,7 +35,7 @@
 This is for minimalists and productivity fanatics.</p>
 
 <h3>
-<a name="pluginsbarchart" class="anchor" href="#pluginsbarchart"><span class="octicon octicon-link"></span></a>plugins/Barchart</h3>
+<a name="barchart-plugin" class="anchor" href="#barchart-plugin"><span class="octicon octicon-link"></span></a>Barchart plugin</h3>
 
 <p>will produce something like this:</p>
 
@@ -55,6 +55,22 @@ This is for minimalists and productivity fanatics.</p>
 
 <pre><code>put 2 3  "stock   :"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
 put 2 7  "banana  :"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
+</code></pre>
+
+<h3>
+<a name="histogram-plugin" class="anchor" href="#histogram-plugin"><span class="octicon octicon-link"></span></a>Histogram plugin</h3>
+
+<p>turns logs into:</p>
+
+<pre><code>UFW        1600 █████████████████████████ 
+cfg80211:    11 █████████████ 
+wlan0:        9 █████ 
+ath:          8 █ 
+</code></pre>
+
+<p>code examples:</p>
+
+<pre><code>dmesg | histogram 2 25 25
 </code></pre>
       </section>
     </div>
