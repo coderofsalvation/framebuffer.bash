@@ -51,7 +51,7 @@ This is for minimalists and productivity fanatics.</p>
  foo     : ██████████
 </code></pre>
 
-<p>code examples:</p>
+<p>code example:</p>
 
 <pre><code>put 2 3  "stock   :"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
 put 2 7  "banana  :"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
@@ -68,9 +68,33 @@ wlan0:        9 █████
 ath:          8 █ 
 </code></pre>
 
-<p>code examples:</p>
+<p>code example:</p>
 
 <pre><code>dmesg | histogram 2 25 25
+</code></pre>
+
+<h3>
+<a name="animations" class="anchor" href="#animations"><span class="octicon octicon-link"></span></a>Animations!</h3>
+
+<p><img src="https://raw.githubusercontent.com/coderofsalvation/framebuffer.bash/master/plugins/tests/animate.gif"></p>
+
+<p>code example:</p>
+
+<pre><code>animate 2 4 0.1 ". o O o"
+</code></pre>
+
+<h3>
+<a name="boxes" class="anchor" href="#boxes"><span class="octicon octicon-link"></span></a>Boxes!</h3>
+
+<pre><code>┌──────────────────────────────────────────────────────────┐
+│date: Mon May 19 23:43:45 CEST 2014                       │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+</code></pre>
+
+<p>code example:</p>
+
+<pre><code>box 1 1 20 10; put 2 2 "date: $(date)"
 </code></pre>
       </section>
     </div>
