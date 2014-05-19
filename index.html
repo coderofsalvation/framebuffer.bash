@@ -31,26 +31,35 @@
         <h3>
 <a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why</h3>
 
-<p>For minimalists and productivity fanatics.
-The console is sometimes 'good enough' compared to fullfledged client/server html/css/javascript ui's.</p>
+<p>Fullfledged html/css/javascript applications are nice, but sometimes a simple email with asciitext does the job.
+This is for minimalists and productivity fanatics.</p>
 
 <h3>
 <a name="pluginsbarchart" class="anchor" href="#pluginsbarchart"><span class="octicon octicon-link"></span></a>plugins/Barchart</h3>
 
 <p>will produce something like this:</p>
 
-<pre><code>stock:  ——▄▄▀▀——▀▀▄▄——▄▄▀▀▄▄———
+<pre><code> apple   : ——▄▄▀▀——▀▀▄▄——▄▄▀▀▄▄———
 
-rates:  __▄▄██__██▄▄__▄▄██▄▄___
+ pear    : __▄▄██__██▄▄__▄▄██▄▄___
 
-redis:  ▀▀▄▄▀▀▄▄▀▀▀▀———————————
+ banana  : ▀▀▄▄▀▀▄▄▀▀▀▀———————————
+
+ plum    : ██████
+           ████
+           ██
+           ██████████
+
+ cheese  : ▀▀▀▀▀▀
+           ▀▀▀▀
+           ▀▀
+           ▀▀▀▀▀▀▀▀▀▀
 </code></pre>
 
-<p>by simply using:</p>
+<p>code examples:</p>
 
-<pre><code>put 2 3 "stock:"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
-put 2 5 "rates:"; echo "0,1,2,0,2,1,0,1,2,1" | OFFSET=3 barchart 10 4 20 
-put 2 7 "redis:"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | barchart 10 6 20
+<pre><code>put 2 3  "stock   :"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
+put 2 7  "banana  :"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
 </code></pre>
       </section>
     </div>
