@@ -37,30 +37,20 @@ The console is sometimes 'good enough' compared to fullfledged client/server htm
 <h3>
 <a name="pluginsbarchart" class="anchor" href="#pluginsbarchart"><span class="octicon octicon-link"></span></a>plugins/Barchart</h3>
 
-<p><code>usage: barchart &lt;x&gt; &lt;y&gt; &lt;height&gt; "0,1,2,0,2,1,"</code></p>
+<p>will produce something like this:</p>
 
-<p>The barchart plugin lets you create 3-state barcharts with ease:
-lets compose our bashscript:</p>
+<pre><code>stock:  ——▄▄▀▀——▀▀▄▄——▄▄▀▀▄▄———
 
-<pre><code>repo="https://raw.githubusercontent.com/coderofsalvation/framebuffer.bash/master"
-curl "$repo/framebuffer.bash"       &gt; barchart
-curl "$repo/plugins/barchart.bash" &gt;&gt; barchart
+rates:  __▄▄██__██▄▄__▄▄██▄▄___
+
+redis:  ▀▀▄▄▀▀▄▄▀▀▀▀———————————
 </code></pre>
 
-<p>lets test a barchart:</p>
+<p>by simply using:</p>
 
-<pre><code>source barchart
-export WIDTH=22
-barchart 20 2 20 "0,1,2,2,1,2,1,0,1,2,0"
-barchart 20 4 20 "0,1,2,1,0,1,2,0"
-</code></pre>
-
-<p>this will produce something like this:</p>
-
-<pre><code>┌──────────────────────┐
-│_▄██▄█▄_▄█_________│
-┌──────────────────────┐
-│_▄█▄_▄█_____________│
+<pre><code>put 2 3 "stock:"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
+put 2 5 "rates:"; echo "0,1,2,0,2,1,0,1,2,1" | OFFSET=3 barchart 10 4 20 
+put 2 7 "redis:"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | barchart 10 6 20
 </code></pre>
       </section>
     </div>
