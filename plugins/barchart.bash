@@ -1,20 +1,34 @@
 # renders simple 3-state ascii barcharts using framebuffer.bash
 # usage:
 #   source framebuffer.bash
+#   source plugins/barchart.bash
 #   export WIDTH=22
-#   barchart 20 2 20 "0,1,2,2,1,2,1,0,1,2,0"
-#   barchart 20 4 20 "0,1,2,1,0,1,2,0"
+#   put 2 3 "stock:"; echo "0,1,2,0,2,1,0,1,2,1" | vbarchart 10 2 20 
+#   put 2 5 "rates:"; echo "0,1,2,0,2,1,0,1,2,1" | OFFSET=3 vbarchart 10 4 20 
+#   put 2 7 "redis:"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
+#
 
-barchart(){
-  x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$4"; [[ -n $WIDTH ]] && w=$WIDTH || w=15;
-  put $x $y ${BOX[0]}; put $((w+1+x)) $y ${BOX[2]}; 
-  for((i=x+1;i<w+x+1;i++)); do put $i $y ${BOX[1]}; done # horiz.line
-  for((i=x+1;i<w+x+1;i++)); do put $i $((y+1)) "_"; done # horiz.line
+vbarchart(){
+  x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$(cat -)"; 
+  [[ -n $WIDTH ]] && w=$WIDTH || w=15;
+  [[ -n OFFSET ]] && offset=$OFFSET || offset=0
+  for((i=x+2;i<w+x+1;i++)); do put $i $((y+1)) ${BAR[offset]}; done # horiz.line
   ((y+=1)); 
-  put $x $y ${BOX[5]}; put $((w+1+x)) $y ${BOX[5]}; ((x+=1)); 
   for i in ${CHARS[@]}; do 
-    put $x $y ${BAR[i]}
-    ((x+=1)); (( x > w )) 
+    (( i > 2 )) && i=2; (( i < 0 )) && i=0; z=$((i+offset)); 
+    put $x $y ${BAR[z]}; put $((x+1)) $y ${BAR[z]} 
+    ((x+=2)); 
+  done
+  echo; echo
+}
+
+hbarchart(){
+  x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$(cat -)"; 
+  [[ -n $DIVIDE ]] && d=$DIVIDE || d=1;
+  [[ -n OFFSET ]] && offset=$OFFSET || offset=0
+  for i in ${CHARS[@]}; do 
+    z=$((i/d)); for((t=0;t<z;t++)); do put $((x+t)) $y ${BAR[offset]}; done
+    ((y+=1)); 
   done
   echo; echo
 }

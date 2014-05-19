@@ -1,0 +1,7 @@
+#!/bin/bash 
+# builds a phat binary with all plugins inside
+
+cat framebuffer.bash plugins/*.bash > framebuffer
+echo "[[ ! -n \"\$1\" ]] && echo -e 'usage: ./framebuffer <yourplugincmd> ...\n\nfor more info see: https://github.com/coderofsalvation/framebuffer.bash.git' || \$@" >> framebuffer
+chmod 755 framebuffer
+echo "done...now run: ./framebuffer <yourplugincmd> ..."
