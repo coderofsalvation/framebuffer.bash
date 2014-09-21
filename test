@@ -1,0 +1,4 @@
+#!/bin/bash 
+echo "running tests..(press ctrl-c to break)"
+tests=(plugins/tests/*.bash)
+for test in "${tests[@]}"; do bash $test; sleep 1s; done
