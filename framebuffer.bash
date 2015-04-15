@@ -5,10 +5,12 @@
 # run ./build to bake all plugins into one script
 
 # our drawing tools :)
+# from http://www.csbruce.com/software/utf-8.html
 FRAME=0
 SYMBOLS=(« » Ø O)
 BLOCK=(░ ▒ ▓ █ ▄ ▀)
-BAR=(— ▄ ▀ _ ▄ █ _ — ¯)
+ZBAR=(—— ▄ ▀)
+BAR=(▁ ▂ ▃ ▄ ▅ ▆ ▆ ▇ ▇ '█' '█')
 BOX=(┌ ─ ┐ └ ┘ │ ┤ ┴ ┬ ├ ┼)
 CHARS=()
 

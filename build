@@ -1,7 +1,10 @@
 #!/bin/bash 
-# builds a phat binary with all plugins inside
-
+# builds a phat script with all plugins inside
+usage='[[ ! -n "$1" ]] && { 
+  grep "^# usage: " "$0" | while read line; do echo "${line/usage: /usage: framebuffer }" | sed "s/^# //g"; done 
+  echo -e "\nfor more info see:  http://coderofsalvation.github.io/framebuffer.bash";
+}'
 cat framebuffer.bash plugins/*.bash > framebuffer
-echo "[[ ! -n \"\$1\" ]] && echo -e 'usage: ./framebuffer <yourplugincmd> ...\n\nfor more info see: https://github.com/coderofsalvation/framebuffer.bash.git' || \$@" >> framebuffer
+echo "$usage" >> framebuffer
 chmod 755 framebuffer
-echo "done...now run: ./framebuffer <yourplugincmd> ..."
+echo "done...now run: ./framebuffer"

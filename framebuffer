@@ -5,10 +5,12 @@
 # run ./build to bake all plugins into one script
 
 # our drawing tools :)
+# from http://www.csbruce.com/software/utf-8.html
 FRAME=0
 SYMBOLS=(« » Ø O)
 BLOCK=(░ ▒ ▓ █ ▄ ▀)
-BAR=(— ▄ ▀ _ ▄ █ _ — ¯)
+ZBAR=(—— ▄ ▀)
+BAR=(▁ ▂ ▃ ▄ ▅ ▆ ▆ ▇ ▇ '█' '█')
 BOX=(┌ ─ ┐ └ ┘ │ ┤ ┴ ┬ ├ ┼)
 CHARS=()
 
@@ -40,19 +42,33 @@ animate_chars(){
 #   source plugins/barchart.bash
 #   export WIDTH=22
 #   put 2 3 "stock:"; echo "0,1,2,0,2,1,0,1,2,1" | vbarchart 10 2 20 
-#   put 2 5 "rates:"; echo "0,1,2,0,2,1,0,1,2,1" | OFFSET=3 vbarchart 10 4 20 
+#   put 2 5 "rates:"; echo "0,10,2,0,7,1,0,4,10" | MAX=10 vb:rchart 10 4 20 
 #   put 2 7 "redis:"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
 #
 
-vbarchart(){
-  x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$(cat -)"; 
+vzbarchart(){
+  x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$(cat -)"
   [[ -n $WIDTH ]] && w=$WIDTH || w=15;
   [[ -n OFFSET ]] && offset=$OFFSET || offset=0
-  for((i=x+2;i<w+x+1;i++)); do put $i $((y+1)) ${BAR[offset]}; done # horiz.line
+  for((i=x+2;i<w+x+1;i++)); do put $i $((y+1)) ${ZBAR[offset]}; done # horiz.line
   ((y+=1)); 
   for i in ${CHARS[@]}; do 
     (( i > 2 )) && i=2; (( i < 0 )) && i=0; z=$((i+offset)); 
-    put $x $y ${BAR[z]}; put $((x+1)) $y ${BAR[z]} 
+    put $x $y ${ZBAR[z]}; put $((x+1)) $y ${ZBAR[z]} 
+    ((x+=2)); 
+  done
+  echo; echo
+}
+
+vbarchart(){
+  x="$1"; y="$2"; h=3; 
+  [[ -n $WIDTH ]] && w=$WIDTH || w=15;
+  [[ -n $DIVIDE ]] && d=$DIVIDE || d=1;
+  IFS=' ' read -a CHARS <<< "$( _dividenumbers $d "$(cat -)" )"; 
+  for((i=x+2;i<w+x+1;i++)); do put $i $((y+1)) ${BAR[offset]}; done # horiz.line
+  ((y+=1)); 
+  for i in ${CHARS[@]}; do 
+    put $x $y ${BAR[i]}; put $((x+1)) $y ${BAR[i]} 
     ((x+=2)); 
   done
   echo; echo
@@ -67,6 +83,24 @@ hbarchart(){
     ((y+=1)); 
   done
   echo; echo
+}
+
+_dividenumbers(){
+  divide="$1"; values="${2//,/ }"; result=()
+  for i in $values; do result="$result $((i/divide))"; done
+  echo "$result"
+}
+# usage: init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
+
+# usage: box <x> <y> <width> <height>
+box(){
+  x="$1"; y="$2"; w="$3"; h="$4"
+  put $x $y ${BOX[0]} ; put $w $y ${BOX[2]}          # top corners
+  for((i=x+1;i<w;i++)); do put $i $y ${BOX[1]}; done # horiz.line
+  for((i=y+1;i<h;i++)); do put $x $i ${BOX[5]}; done # left vertline
+  for((i=y+1;i<h;i++)); do put $w $i ${BOX[5]}; done # left vertline
+  for((i=x+1;i<w;i++)); do put $i $h ${BOX[1]}; done # horiz.line
+  put $x $h ${BOX[3]} ; put $w $h ${BOX[4]}          # bottom corners
 }
 # usage: init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
 
@@ -99,4 +133,7 @@ histogram(){
   fi 
   echo; echo
 }
-[[ ! -n "$1" ]] && echo -e 'usage: ./framebuffer <yourplugincmd> ...\n\nfor more info see: https://github.com/coderofsalvation/framebuffer.bash.git' || $@
+[[ ! -n "$1" ]] && { 
+  grep "^# usage: " "$0" | while read line; do echo "${line/usage: /usage: framebuffer }" | sed "s/^# //g"; done 
+  echo -e "\nfor more info see:  http://coderofsalvation.github.io/framebuffer.bash";
+}
