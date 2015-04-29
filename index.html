@@ -4,9 +4,9 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
     <title>Framebuffer.bash by coderofsalvation</title>
   </head>
@@ -29,13 +29,13 @@
     <div class="container">
       <section id="main_content">
         <h3>
-<a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why</h3>
+<a id="why" class="anchor" href="#why" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why</h3>
 
 <p>Fullfledged html/css/javascript applications are nice, but sometimes a simple email with asciitext does the job.
 This is for minimalists and productivity fanatics.</p>
 
 <h3>
-<a name="barcharts" class="anchor" href="#barcharts"><span class="octicon octicon-link"></span></a>Barcharts!</h3>
+<a id="barcharts" class="anchor" href="#barcharts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Barcharts!</h3>
 
 <p>will produce something like this:</p>
 
@@ -51,12 +51,42 @@ This is for minimalists and productivity fanatics.</p>
 
 <p>code example:</p>
 
-<pre><code>put 2 3  "stock   :"; echo "0,1,2,0,2,1,0,1,2,1" | barchart 10 2 20 
-put 2 7  "banana  :"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
+<pre><code>put 2 3  "stock   :"; echo "0,1,2,0,2,1,0,1,2,1" | fb barchart 10 2 20 
+put 2 7  "banana  :"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | fb vbarchart 10 6 20
 </code></pre>
 
 <h3>
-<a name="histograms" class="anchor" href="#histograms"><span class="octicon octicon-link"></span></a>Histograms!</h3>
+<a id="number-to-bar" class="anchor" href="#number-to-bar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Number to bar</h3>
+
+<pre><code>milk                 5                    ▆▆▆▆▆
+cheese               3                    ▆▆▆
+palinka              14                   ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+</code></pre>
+
+<p>code example:</p>
+
+<pre><code>echo -e "milk 5\ncheese 3\npalinka 14" | fb number2bar 2
+</code></pre>
+
+<h3>
+<a id="ascii-tables" class="anchor" href="#ascii-tables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ascii tables!</h3>
+
+<p>Get pretty aligned, copy/paste-able output:</p>
+
+<pre><code>foo long column      2  foobie
+bar                  5  barrie
+</code></pre>
+
+<p>code example:</p>
+
+<pre><code>cat foo.csv | fb csv2ascii
+cat semicolon.csv | SEP=';' fb csv2ascii
+</code></pre>
+
+<p>CSV's with quoted strings are supported.</p>
+
+<h3>
+<a id="histograms" class="anchor" href="#histograms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Histograms!</h3>
 
 <p>turns logs into:</p>
 
@@ -68,21 +98,21 @@ ath:          8 █
 
 <p>code example:</p>
 
-<pre><code>dmesg | histogram 2 25 25
+<pre><code>dmesg | fb histogram 2 25 25
 </code></pre>
 
 <h3>
-<a name="animations" class="anchor" href="#animations"><span class="octicon octicon-link"></span></a>Animations!</h3>
+<a id="animations" class="anchor" href="#animations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Animations!</h3>
 
 <p><img src="https://raw.githubusercontent.com/coderofsalvation/framebuffer.bash/master/plugins/tests/animate.gif"></p>
 
 <p>code example:</p>
 
-<pre><code>animate 2 4 0.1 ". o O o"
+<pre><code>fb animate 2 4 0.1 ". o O o"
 </code></pre>
 
 <h3>
-<a name="boxes" class="anchor" href="#boxes"><span class="octicon octicon-link"></span></a>Boxes!</h3>
+<a id="boxes" class="anchor" href="#boxes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Boxes!</h3>
 
 <pre><code>┌──────────────────────────────────────────────────────────┐
 │date: Mon May 19 23:43:45 CEST 2014                       │
@@ -92,7 +122,7 @@ ath:          8 █
 
 <p>code example:</p>
 
-<pre><code>box 1 1 20 10; put 2 2 "date: $(date)"
+<pre><code>fb box 1 1 20 10; fb put 2 2 "date: $(date)"
 </code></pre>
       </section>
     </div>
