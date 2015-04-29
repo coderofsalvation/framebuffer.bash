@@ -1,6 +1,6 @@
-# usage: init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
+# usage : init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
 
-# usage: box <x> <y> <width> <height>
+# usage: fb box <x> <y> <width> <height>
 box(){
   x="$1"; y="$2"; w="$3"; h="$4"
   put $x $y ${BOX[0]} ; put $w $y ${BOX[2]}          # top corners

@@ -19,10 +19,10 @@ init_screen(){
   tput civis -- invisible # hide cursor
 }
 
-# usage: put <x> <y> <string>
+# usage: fb put <x> <y> <string>
 put() { printf "\x1B["$2";"$1"f$3" "$4"; }
 
-# usage: resetlines <y> [amount=1]
+# usage: fb resetlines <y> [amount=1]
 resetlines(){
   startline="$1"; [[ -n "$2" ]] && amount="$2" || amount=1
   put 0 $startline

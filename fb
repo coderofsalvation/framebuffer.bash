@@ -19,16 +19,16 @@ init_screen(){
   tput civis -- invisible # hide cursor
 }
 
-# usage: put <x> <y> <string>
+# usage: fb put <x> <y> <string>
 put() { printf "\x1B["$2";"$1"f$3" "$4"; }
 
-# usage: resetlines <y> [amount=1]
+# usage: fb resetlines <y> [amount=1]
 resetlines(){
   startline="$1"; [[ -n "$2" ]] && amount="$2" || amount=1
   put 0 $startline
   for yy in $( seq 1 $amount ); do tput el; printf "\r"; done
 }
-# usage: animate <x> <y> <sleepframe> <characterarray> 
+# usage: fb animate <x> <y> <sleepframe> <characterarray> 
 animate(){ while animate_chars "$1" "$2" "$3" "$4" $FRAME; do :; done }
 animate_chars(){
   x=$1; y=$2; sleep=$3; FRAMES="$4"; [[ -n "$5" ]] && FRAME=$5 || FRAME=0
@@ -37,7 +37,7 @@ animate_chars(){
   ((FRAME+=1)); sleep "$sleep"s; return 0;
 }
 # renders simple 3-state ascii barcharts using framebuffer.bash
-# usage:
+# usage :
 #   source framebuffer.bash
 #   source plugins/barchart.bash
 #   export WIDTH=22
@@ -46,6 +46,7 @@ animate_chars(){
 #   put 2 7 "redis:"; redis-cli --csv LRANGE foo 0 -1 | sed 's/[^0-9,\\-]*//g' | vbarchart 10 6 20
 #
 
+# usage: fb put 2 3 "stock:"; echo "0,1,2,0,2,1,0,1,2,1" | fb vbarchart 10 2 20 
 vzbarchart(){
   x="$1"; y="$2"; h=3; IFS=',' read -a CHARS <<< "$(cat -)"
   [[ -n $WIDTH ]] && w=$WIDTH || w=15;
@@ -90,9 +91,9 @@ _dividenumbers(){
   for i in $values; do result="$result $((i/divide))"; done
   echo "$result"
 }
-# usage: init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
+# usage : init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
 
-# usage: box <x> <y> <width> <height>
+# usage: fb box <x> <y> <width> <height>
 box(){
   x="$1"; y="$2"; w="$3"; h="$4"
   put $x $y ${BOX[0]} ; put $w $y ${BOX[2]}          # top corners
@@ -102,9 +103,27 @@ box(){
   for((i=x+1;i<w;i++)); do put $i $h ${BOX[1]}; done # horiz.line
   put $x $h ${BOX[3]} ; put $w $h ${BOX[4]}          # bottom corners
 }
-# usage: init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
+# converts numbers into bars, easy render ascii barcharts 
+# usage :
+#   source framebuffer.bash
+#   source plugins/histogram.bash
+#   echo -e "milk 5\ncheese 2" | number2bar 2
+#
 
-# usage: box <x> <y> <width> <height>
+# usage: cat foo.csv | [SEP=';'] fb csv2ascii [maxcolumn]  (default seperator is ,)
+csv2ascii(){
+  [[ -t 0 ]] && { echo "Usage: cat foo.csv | [SEP=';'] csv2ascii [maxcolumn] # default seperator is comma"; exit 0; }
+  [[ ! -n $SEP ]] && SEP=','
+  # maximum field to display 
+  max=9999; [[ -n $1 ]] && max=$1                                           
+  # split on multiple seperators (gawk only) + loop over field + output table 
+  cat - | sed 's/,"",/," ",/g' | gawk -vFS='^"|"'$SEP'"|"$|"'$SEP'|'$SEP'"|'$SEP    \
+          '{out=""; for(i=1;i<NF+1&&i<max;i++) out=out"\t"$i; print out }'      \
+          max=$max | sed 's/""/"/g' | column -t -s $'\t' 
+}
+# usage : init_screen; box 1 1 $(tput cols) 10; put 2 2 "date: $(date) ${BLOCK[0]}"
+
+# usage: fb box <x> <y> <width> <height>
 box(){
   x="$1"; y="$2"; w="$3"; h="$4"
   put $x $y ${BOX[0]} ; put $w $y ${BOX[2]}          # top corners
@@ -115,17 +134,17 @@ box(){
   put $x $h ${BOX[3]} ; put $w $h ${BOX[4]}          # bottom corners
 }
 # renders simple 3-state ascii barcharts using framebuffer.bash
-# usage:
+# usage :
 #   source framebuffer.bash
 #   source plugins/histogram.bash
 #   dmesg | histogram 2 25 25
 #
 
-# usage: histogram <fieldnumber> [width] [padding]
+# usage: echo "foo bar flop" | fb histogram <fieldnumber> [width] [padding]
 histogram(){
-  [[ -n $1 ]] && field="$1"   || field=1; 
-  [[ ! -n $WIDTH ]] && WIDTH=20; 
-  [[ -n OFFSET ]] && offset=$OFFSET || offset=4; 
+  [[ -n $1 ]] && field="$1" || field=1; 
+  [[ -n $2 ]] && WIDTH=$2   || WIDTH=20; 
+  [[ -n $3 ]] && PADDING=$3
   if [[ -n $PADDING ]]; then 
     cat - | awk '{h[$'"$field"']++}END{for(i in h){print h[i],i|"sort -rn|head -20"}}' |awk '!max{max=$1;}{r="";i=s='$WIDTH'*$1/max;while(i-->0)r=r"'"${BAR[5]}"'";printf "%'$PADDING's %5d %s %s",$2,$1,r,"\n";}'
   else
@@ -133,7 +152,35 @@ histogram(){
   fi 
   echo; echo
 }
-[[ ! -n "$1" ]] && { 
-  grep "^# usage: " "$0" | while read line; do echo "${line/usage: /usage: framebuffer }" | sed "s/^# //g"; done 
-  echo -e "\nfor more info see:  http://coderofsalvation.github.io/framebuffer.bash";
+# converts numbers into bars, easy render ascii barcharts 
+# usage :
+#   source framebuffer.bash
+#   source plugins/histogram.bash
+#   echo -e "milk 5\ncheese 2" | number2bar 2
+#
+
+# usage: echo "milk 5" | fb number2bar <fieldnumber> [padding] [char]
+number2bar(){
+  [[ -n $1 ]] && field="$1"   || field=1; 
+  [[ -n $2 ]] && padding=$2   || padding=20
+  [[ -n $3 ]] && char=$3      || char=${BAR[5]}
+  cat - | awk '{ 
+    for(i = 1; i <= NF; i++) { 
+      if( $i != $'"$field"' ){
+         printf "%-'"$padding"'s ",$i
+      }else{
+         printf "%-'"$padding"'s ",$i
+         for(j=0;j<$i;j++){ printf "%s","'"$char"'" }
+      }
+    }
+    printf "\n"
+  }'
 }
+
+[[ ! -n "$1" ]] && { 
+  grep "^# usage: " "$0" | while read line; do echo "${line}" | sed "s/^# //g"; done 
+  echo -e "\nfor more info see:  http://coderofsalvation.github.io/framebuffer.bash";
+  exit
+}
+"$@"
+
